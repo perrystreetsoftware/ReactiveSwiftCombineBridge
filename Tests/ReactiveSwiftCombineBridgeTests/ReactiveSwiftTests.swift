@@ -27,4 +27,19 @@ final class ReactiveSwiftTests: XCTestCase {
 
         XCTAssertEqual(nextInt, 1)
     }
+
+    func testCombineToReactiveSwift() {
+        let producer = Future<Int, Never> { promise in
+            promise(.success(1))
+        }.eraseToAnyPublisher()
+         .producer()
+
+        let exp = expectation(description: "Stream complete")
+
+        producer.startWithCompleted {
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 5)
+    }
 }
